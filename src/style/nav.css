@@ -1,0 +1,22 @@
+.navbar{
+    background-color: rgb(255, 255, 255);
+    width: 400px;
+    height: 500px;
+    border-radius: 7px;
+    opacity: 0.3;
+    position: fixed;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin: 25px 0px 0px 25px 
+}
+
+.navbar:hover{
+    opacity: 1;
+}
+
+.shapes{
+    border-top: solid 1px rgb(153, 153, 153);
+    border-bottom: solid 1px rgb(153, 153, 153);
+    margin: 30px 20px;
+    padding: 30px 10px; 
+}
+

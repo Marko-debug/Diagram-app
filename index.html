@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="src/style/nav.css" />
+  <link rel="stylesheet" href="src/style/showAndClose.css" />
+  <link rel="stylesheet" href="src/style/canvas.css" />
+</head>
+
+<body>
+  <!-- Dynamic Bar -->
+  <div class="navbar">
+    <div class="shapes">
+      <button class="btn-process">Process</button>
+      <button class="btn-physically-flow">Physically flow</button>
+      <button class="btn-information-flow">Information flow</button>
+      <button class="btn-input">Input</button>
+      <button class="btn-output">Output</button>
+      <button class="btn-end-of-instance">End of instance</button>
+      <button class="btn-event-transition">Event transition</button>
+      <button class="btn-two-branches">
+        Two-branching with positive and negative branch
+      </button>
+      <button class="btn-three-branches">
+        Three-branching with connected value branches
+      </button>
+      <button class="btn-split-branches">Split branches</button>
+      <button class="btn-parallel">Parallel</button>
+      <button class="btn-rediraction">Redirection symbols</button>
+      <button class="btn-end-of-two-process">End of two processes</button>
+      <button class="btn-end-of-three-process">End of three processes</button>
+    </div>
+    <button class="color">Color</button>
+    <button class="text">Text</button>
+    <button class="basket">Basket</button>
+  </div>
+
+  <!--Showing blockes-->
+
+  <div class="pr" hidden="true" style="margin-top: 100px">
+    <image width="200" height="150"></image>
+    <div class="show-name">Process</div>
+  </div>
+  <div class="pf" hidden="true" style="margin-top: 100px">
+    <image width="200" height="150"></image>
+    <div class="show-name">Physically flow</div>
+  </div>
+  <div class="if" hidden="true" style="margin-top: 100px">
+    <image width="200" height="150"></image>
+    <div class="show-name">Information flow</div>
+  </div>
+  <div class="in" hidden="true" style="margin-top: 100px">
+    <image width="200" height="150"></image>
+    <div class="show-name">Input</div>
+  </div>
+  <div class="ou" hidden="true" style="margin-top: 150px">
+    <image width="200" height="150"></image>
+    <div class="show-name">Output</div>
+  </div>
+  <div class="ei" hidden="true" style="margin-top: 150px">
+    <image width="200" height="150"></image>
+    <div class="show-name">End of instance</div>
+  </div>
+  <div class="et" hidden="true" style="margin-top: 150px">
+    <image width="200" height="150"></image>
+    <div class="show-name">Event transition</div>
+  </div>
+  <div class="wb" hidden="true" style="margin-top: 150px">
+    <image width="200" height="150"></image>
+    <div class="show-name">Two-branching with positive and negative branch</div>
+  </div>
+  <div class="hb" hidden="true" style="margin-top: 200px">
+    <image width="200" height="150"></image>
+    <div class="show-name">Three-branching with connected value branches</div>
+  </div>
+  <div class="sb" hidden="true" style="margin-top: 200px">
+    <image width="200" height="150"></image>
+    <div class="show-name">Split braches</div>
+  </div>
+  <div class="pa" hidden="true" style="margin-top: 200px">
+    <image width="200" height="150"></image>
+    <div class="show-name">Parallel</div>
+  </div>
+  <div class="re" hidden="true" style="margin-top: 200px">
+    <image width="200" height="150"></image>
+    <div class="show-name">Redirection symbol</div>
+  </div>
+  <div class="ep" hidden="true" style="margin-top: 250px">
+    <image width="200" height="150"></image>
+    <div class="show-name">End of two processes</div>
+  </div>
+  <div class="eh" hidden="true" style="margin-top: 250px">
+    <image width="200" height="150"></image>
+    <div class="show-name">End of three processes</div>
+  </div>
+
+  <canvas id="canvas"></canvas>
+  <script type="module" src="src/index.js"></script>
+</body>
