@@ -1,9 +1,19 @@
 import {getButtons} from './components/ShowBlock.js';
-//import History from './components/History.js'
+import {chooseShape} from './components/chooseShape.js'
+
 import Process from './shapes/Process.js'
 import {physicallyFlow} from './shapes/PhysicallyFlow.js'
 import {informationFlow} from './shapes/InformationFlow.js'
 import Input from './shapes/Input.js';
+// import Output from './shapes/Output.js';
+// import EndOfInstatnce from './shapes/EndOfInstance.js';
+// import EventTransition from './shapes/EventTransition.js';
+// import TwoBranches from './shapes/TwoBranches.js';
+// import ThreeBranches from './shapes/ThreeBranches.js';
+// import SplitBranches from './shapes/SplitBranches.js';
+// import Parallel from './shapes/Parallel.js';
+// import EndOfTwoProcess from './shapes/EndOfTwoProcess.js';
+// import EndOfThreeProcess from './shapes/EndOfThreeProcess.js';
 
 // later, to make this navbar to be dynamic, that means, to move it wherever i want either with showing block and to minimazi and maximazi as well
 
@@ -24,9 +34,15 @@ window.addEventListener("load", (event)=>{
     let selectedElement;
 
     const updateElement = (id, x1, y1, x2, y2, type) => {
-        // console.log(elements[id]);
-        elements[id] = new Process(id, ctx, type, x1, y1, x2, y2, 10);
-        // console.log(elements[id]);
+        if(type === "process"){
+            elements[id] = new Process(id, ctx, type, x1, y1, x2, y2, 10);
+        }else{
+            throw new Error(`Type not recognised" ${type}`)
+        }
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        elements.forEach(element => {
+            element.getShape()
+        })
     }
     
     const positionWithinElement = (clientX, clientY, element) => {
@@ -47,9 +63,9 @@ window.addEventListener("load", (event)=>{
 
         const element = getElementAtPosition(clientX, clientY, elements)
         if(element){
-            const offsetX = clientX - element.width;
-            const offsetY = clientY - element.height;
-            selectedElement = {...element, offsetX, offsetY};
+            const offSetX = clientX - element.width;
+            const offSetY = clientY - element.height;
+            selectedElement = {...element, offSetX, offSetY};
             
             if(element.position === 'inside'){
                 action = "moving";
@@ -57,9 +73,8 @@ window.addEventListener("load", (event)=>{
         }
     }
 
-    const finishDrawing = (event) => {
-        const {clientX, clientY} = event;
-        console.log("finishDrawing")
+    const finishDrawing = () => {
+        action = 'none'
     }
 
     const adjustment = (event) => {
@@ -68,15 +83,14 @@ window.addEventListener("load", (event)=>{
         event.target.style.cursor = element ? "move" : "default";
         // console.log("adjustment")
         // console.log(action)
-
+        
         if(action === "moving"){
             const {id, width, height, width2, height2, type, offSetX, offSetY} = selectedElement;
-            console.log(selectedElement)
             const w = width2 - width;   
             const h = height2 - height;
             const nexX1 = clientX - offSetX;
             const nexY1 = clientY - offSetY;
-            updateElement(id, nexX1, nexY1, nexX1 + w, nexY1 + h, type)
+            updateElement(id, nexX1, nexY1, nexX1 + w, nexY1 + h, type);
         }
     } 
 
@@ -85,93 +99,6 @@ window.addEventListener("load", (event)=>{
     canvas.onmouseup = finishDrawing;
     canvas.onmousemove = adjustment;
 
-    const chooseShape = (shape) =>{
-
-         if(shape === 'btn-process'){
-             //ctx.roundRect(100, 10, 50, 50, [10]);       Appears an Error: roundRect is not a function
-            //  const process = new Process(ctx);
-            //  process.getShape()
-            //  console.log(process.getShape())
-            const width = 1000;
-            const height = 300;
-
-            const id = elements.length;
-            const type = "process"
-            const element = new Process(id, ctx, type, width, height, width + 300, height + 200, 10);
-            element.getShape()
-            elements.push(element)
-            return;
-        }
-        if(shape === "btn-physically-flow"){
-
-            const id = elements.length;
-            const position = physicallyFlow(ctx, 1000, 300, 10)
-            const element = {id, position}
-            elements.push(element)
-            console.log(elements)
-            return;
-        }
-        if(shape === "btn-information-flow"){
-            infoArrow(ctx)
-            const id = elements.length;
-            const position = informationFlow(ctx, 1000, 300, 10)
-            const element = {id, position}
-            elements.push(element)
-            console.log(elements)
-            return;
-        }
-        if(shape === 'btn-input'){
-            const input = new Input(ctx);
-            input.getShape();
-            elements.push(input)
-            return;
-        }
-        if(shape === 'btn-output'){
-            //rectangle(ctx)
-            return;
-        }
-
-        if(shape === 'btn-end-of-instance'){
-            //rectangle(ctx)
-            return;
-        }
-
-        if(shape === 'btn-event-transition'){
-            //rectangle(ctx)
-            return;
-        }
-
-        if(shape === 'btn-two-branches'){
-            //rectangle(ctx)
-            return;
-        }
-
-        if(shape === 'btn-two-branches'){
-            //rectangle(ctx)
-            return;
-        }
-
-        if(shape === 'btn-two-branches'){
-            //rectangle(ctx)
-            return;
-        }
-
-        if(shape === 'btn-two-branches'){
-            //rectangle(ctx)
-            return;
-        }
-
-        if(shape === 'btn-two-branches'){
-            //rectangle(ctx)
-            return;
-        }
-        if(shape === 'btn-two-branches'){
-            //rectangle(ctx)
-            return;
-        }
-
-    }
-
     for(const button of getButtons)
-    button.ref.addEventListener('click', () =>chooseShape(button.shape))
+    button.ref.addEventListener('click', () =>chooseShape(button.shape, elements, ctx))
 })
