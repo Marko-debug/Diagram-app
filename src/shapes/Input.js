@@ -1,22 +1,29 @@
 export default class Input{
-    constructor(ctx, width, height, color){
+    constructor(id, ctx, type, width, height, width2, height2,radius){
+        this.id = id;
         this.ctx = ctx;
+        this.type = type
         this.width = width;
         this.height = height;
-        this.color = color;
+        this.width2 = width2;
+        this.height2 = height2;
+        // this.peakWidth = peakWidth;
+        // this.peakHeight = peakHeight;
+        this.radius = radius;
     }
 
     getShape(){
-        const {ctx} = this;
+        const {ctx, width, height, radius} = this;
+
         ctx.beginPath();
-        ctx.moveTo(1000, 402);
-        ctx.arcTo(1000, 460, 1150, 460, 3);
-        ctx.arcTo(1150, 460, 1150, 500, 3);
-        ctx.arcTo(1150, 500, 1210, 430, 3);
-        ctx.arcTo(1210, 430, 1150, 360, 3);
-        ctx.arcTo(1150, 360, 1150, 400, 3);
-        ctx.arcTo(1150, 400, 1000, 400, 3);
-        ctx.arcTo(1000, 400, 1000, 460, 3);
+        ctx.moveTo(width, height + 2);
+        ctx.arcTo(width, height + 60, width + 150, height + 60, radius);
+        ctx.arcTo(width + 150, height + 60, width + 150, height + 100, radius);
+        ctx.arcTo(width + 150, height + 100, width + 210, height + 30, radius);
+        ctx.arcTo(width + 210, height + 30, width + 150, height - 40, radius);
+        ctx.arcTo(width + 150, height - 40, width + 150, height, radius);
+        ctx.arcTo(width + 150, height, width, height, radius);
+        ctx.arcTo(width, height, width, height + 60, radius);
         ctx.stroke();
     }
 }
