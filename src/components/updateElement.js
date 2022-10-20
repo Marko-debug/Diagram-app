@@ -12,9 +12,9 @@ import EventTransition from '../shapes/EventTransition.js';
 // import EndOfTwoProcess from '../shapes/EndOfTwoProcess.js';
 // import EndOfThreeProcess from '../shapes/EndOfThreeProcess.js';
 
-const updateElement = (elements, ctx, id, nexX1, nexY1, w, h, type, shapes,increase) => {
+const updateElement = (elements, ctx, id, nexX1, nexY1, w, h, type, shapes, increaseWidth, increaseHeight) => {
     if(type === "process"){
-        elements[id] = new Process(id, ctx, type, nexX1, nexY1, nexX1 + w, nexY1 + h, w, 10, shapes,increase);
+        elements[id] = new Process(id, ctx, type, nexX1, nexY1, nexX1 + w, nexY1 + h, w, 10, shapes, increaseWidth - 300, increaseHeight - 200);
     }
     else if(type === "input"){
         elements[id] = new Input(id, ctx, type, nexX1, nexY1, nexX1 + w, nexY1 + h, 3);
