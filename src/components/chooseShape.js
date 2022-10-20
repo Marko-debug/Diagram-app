@@ -4,7 +4,7 @@ import {informationFlow} from '../shapes/InformationFlow.js'
 import Input from '../shapes/Input.js';
 // import Output from '../shapes/Output.js';
 import EndOfInstance from '../shapes/EndOfInstance.js';
-// import EventTransition from '../shapes/EventTransition.js';
+import EventTransition from '../shapes/EventTransition.js';
 // import TwoBranches from '../shapes/TwoBranches.js';
 // import ThreeBranches from '../shapes/ThreeBranches.js';
 // import SplitBranches from '../shapes/SplitBranches.js';
@@ -22,8 +22,9 @@ const chooseShape = (shape, elements, ctx) =>{
        //  console.log(process.getShape())
        const width = 500;
        const height = 60;
-       const type = "process"
-       const element = new Process(id, ctx, type, width, height, width + 300, height + 200, 10);
+       const type = "process";
+       const shapes = [];
+       const element = new Process(id, ctx, type, width, height, width + 300, height + 200, 300,10, shapes);
        elements.push(element)
    }
    if(shape === "btn-physically-flow"){
@@ -59,8 +60,12 @@ const chooseShape = (shape, elements, ctx) =>{
    }
 
    if(shape === 'btn-event-transition'){
-       //rectangle(ctx)
-   }
+        const width = 500;
+        const height = 60;
+        const type = "event-transition";
+        const element = new EventTransition(id, ctx, type, width, height, width + 150, height + 50, 25)
+        elements.push(element)
+    }
 
    if(shape === 'btn-two-branches'){
        //rectangle(ctx)

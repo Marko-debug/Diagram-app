@@ -1,19 +1,6 @@
 import {getButtons} from './components/ShowBlock.js';
 import {chooseShape} from './components/chooseShape.js'
-
-import Process from './shapes/Process.js'
-import {physicallyFlow} from './shapes/PhysicallyFlow.js'
-import {informationFlow} from './shapes/InformationFlow.js'
-import Input from './shapes/Input.js';
-// import Output from './shapes/Output.js';
-import EndOfInstance from './shapes/EndOfInstance.js';
-// import EventTransition from './shapes/EventTransition.js';
-// import TwoBranches from './shapes/TwoBranches.js';
-// import ThreeBranches from './shapes/ThreeBranches.js';
-// import SplitBranches from './shapes/SplitBranches.js';
-// import Parallel from './shapes/Parallel.js';
-// import EndOfTwoProcess from './shapes/EndOfTwoProcess.js';
-// import EndOfThreeProcess from './shapes/EndOfThreeProcess.js';
+import {updateElement} from './components/updateElement.js'
 
 // later, to make this navbar to be dynamic, that means, to move it wherever i want either with showing block and to minimazi and maximazi as well
 
@@ -32,25 +19,6 @@ window.addEventListener("load", (event)=>{
     const elements = [];
     let action = 'none';
     let selectedElement;
-
-    const updateElement = (id, nexX1, nexY1, w, h, type, increase) => {
-        if(type === "process"){
-            elements[id] = new Process(id, ctx, type, nexX1, nexY1, nexX1 + w, nexY1 + h, 10, increase);
-        }
-        else if(type === "input"){
-            elements[id] = new Input(id, ctx, type, nexX1, nexY1, nexX1 + w, nexY1 + h, 3);
-        }
-        else if(type === "end-of-instance"){
-            elements[id] = new EndOfInstance(id, ctx, type, nexX1 + w/2, nexY1 + h/2,nexX1, nexY1, nexX1 + w, nexY1 + h, 50);
-        }else{
-            throw new Error(`Type not recognised" ${type}`)
-        }
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        elements.forEach(element => {
-            element.getShape()
-        })
-    }
 
     const nearPoint = (clientX, clientY, peakWidth, peakHeight, name) => {
         return Math.abs(clientX - peakWidth) < 5 && Math.abs(clientY, peakHeight) < 5 ? name : null;
@@ -103,14 +71,40 @@ window.addEventListener("load", (event)=>{
             if(element.position === 'inside'){
                 action = "moving";
             }
-            // if(element.position === 'start'){
+            // if(element.position === 'start'){ 
             //     action = "rotation"
             // }
         }
     }
 
-    const finishDrawing = () => {
-        action = 'none'
+    const finishDrawing = (event) => {
+        const {clientX, clientY} = event;
+        const result = elements.filter(element => element.id !== selectedElement.id)
+        
+        //basic is the process, which should be enlarged
+        const basic = getElementAtPosition(clientX, clientY, result);
+        if(basic && basic.type === "process"){
+            const {id, width, height, width2, height2, type, shapes} = basic;
+            const offSetX = clientX - width;
+            const offSetY = clientY - height;
+            const w = width2 - width;   
+            const h = height2 - height;
+            const nexX1 = clientX - offSetX;
+            const nexY1 = clientY - offSetY;
+            
+            //pushing to the array
+            shapes.push(selectedElement)
+            // console.log(shapes)
+            // console.log(`id: ${id}, nexX1: ${nexX1}, nexY1: ${nexY1}, w: ${w}, h: ${h}`)
+            // updateElement(id, nexX1, nexY1, w + 100, h + 100, type, 100, selectedElement);     !! fix w + 100 and h + 100 
+            updateElement(elements ,ctx,id, nexX1, nexY1, w, h, type, shapes, 100);
+            
+            const processes = elements.filter(element => element.type === "process")
+            let propertyOfProcesses = processes.map(process => process.w)
+            const theBiggest = Math.max(propertyOfProcesses)
+            console.log(theBiggest)
+        }
+        action = 'none';
     }
 
     const adjustment = (event) => {
@@ -124,28 +118,39 @@ window.addEventListener("load", (event)=>{
                 const h = height3 - height2;
                 const nexX1 = clientX - offSetX;
                 const nexY1 = clientY - offSetY;
-                updateElement(id, nexX1, nexY1, w, h, type);
-            }else{
+                updateElement(elements, ctx, id, nexX1, nexY1, w, h, type);
+            }else if(selectedElement.type === "process"){
+                const {id, width, height, width2, height2, type, offSetX, offSetY, shapes} = selectedElement;
+                const w = width2 - width;   
+                const h = height2 - height;
+                const nexX1 = clientX - offSetX;
+                const nexY1 = clientY - offSetY;
+                updateElement(elements, ctx, id, nexX1, nexY1, w, h, type, shapes);
+            }
+            else{
                 const {id, width, height, width2, height2, type, offSetX, offSetY} = selectedElement;
                 const w = width2 - width;   
                 const h = height2 - height;
                 const nexX1 = clientX - offSetX;
                 const nexY1 = clientY - offSetY;
-                updateElement(id, nexX1, nexY1, w, h, type);
+                updateElement(elements, ctx,id, nexX1, nexY1, w, h, type);
             }
-            const result = elements.filter(element => element.id !== selectedElement.id)
+            const result = elements.filter(element => element.id !== selectedElement.id && element.type === "process")
             const enlarge = getElementAtPosition(clientX, clientY, result);
 
             if(enlarge){
                 const offSetX = clientX - enlarge.width;
                 const offSetY = clientY - enlarge.height;
 
-                const {id, width, height, width2, height2, type} = enlarge;
+                const {id, width, height, width2, height2, type, shapes} = enlarge;
                 const w = width2 - width;   
                 const h = height2 - height;
                 const nexX1 = clientX - offSetX;
                 const nexY1 = clientY - offSetY;
-                updateElement(id, nexX1, nexY1, w, h, type, 100);
+                updateElement(elements, ctx,id, nexX1, nexY1, w, h, type, shapes, 100);
+                // if(enlarge && element.type === "process"){
+                //     updateElement(id, nexX1, nexY1, w, h, type, 100, selectedElement);
+                // }
             }
 
 

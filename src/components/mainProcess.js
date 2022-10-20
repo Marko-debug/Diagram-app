@@ -1,0 +1,6 @@
+
+const mainProcess = () => {
+
+}
+
+export {mainProcess}
