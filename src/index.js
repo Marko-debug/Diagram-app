@@ -175,12 +175,14 @@ window.addEventListener("load", (event)=>{
                 const {id, width, height, width2, height2, type, shapes} = enlarge;
                 const w = width2 - width;   
                 const h = height2 - height;
-                const nexX1 = clientX - offSetX;
-                const nexY1 = clientY - offSetY;
-                updateElement(elements, ctx,id, nexX1, nexY1, w, h, type, shapes, 400, 300);
-                // if(enlarge && element.type === "process"){
-                //     updateElement(id, nexX1, nexY1, w, h, type, 100, selectedElement);
-                // }
+                if(w === 300 && h === 200){
+                    const nexX1 = clientX - offSetX;
+                    const nexY1 = clientY - offSetY;
+                    updateElement(elements, ctx,id, nexX1, nexY1, w, h, type, shapes, 400, 300);
+                    // if(enlarge && element.type === "process"){
+                    //     updateElement(id, nexX1, nexY1, w, h, type, 100, selectedElement);
+                    // }
+                }
             }
 
 
