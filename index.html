@@ -9,36 +9,43 @@
 
 <body>
   <!-- Dynamic Bar -->
-  <div class="navbar">
-    <div class="shapes">
-      <button class="btn-process">Process</button>
-      <button class="btn-physically-flow">Physically flow</button>
-      <button class="btn-information-flow">Information flow</button>
-      <button class="btn-input">Input</button>
-      <button class="btn-output">Output</button>
-      <button class="btn-end-of-instance">End of instance</button>
-      <button class="btn-event-transition">Event transition</button>
-      <button class="btn-two-branches">
-        Two-branching with positive and negative branch
-      </button>
-      <button class="btn-three-branches">
-        Three-branching with connected value branches
-      </button>
-      <button class="btn-split-branches">Split branches</button>
-      <button class="btn-parallel">Parallel</button>
-      <button class="btn-rediraction">Redirection symbols</button>
-      <button class="btn-end-of-two-process">End of two processes</button>
-      <button class="btn-end-of-three-process">End of three processes</button>
+  <div class="navbar" style="width: 400px; height: 500px">
+    <button class="btn-navbar">☰</button>
+    <div class="navbar-inner">
+      <div class="zoom">
+        <button class="zoom-in">Zoom in</button>
+        <button class="zoom-out">Zoom out</button>
+      </div>
+      <div class="shapes">
+        <button class="btn-process">Process</button>
+        <button class="btn-physically-flow">Physically flow</button>
+        <button class="btn-information-flow">Information flow</button>
+        <button class="btn-input">Input</button>
+        <button class="btn-output">Output</button>
+        <button class="btn-end-of-instance">End of instance</button>
+        <button class="btn-event-transition">Event transition</button>
+        <button class="btn-two-branches">
+          Two-branching with positive and negative branch
+        </button>
+        <button class="btn-three-branches">
+          Three-branching with connected value branches
+        </button>
+        <button class="btn-split-branches">Split branches</button>
+        <button class="btn-parallel">Parallel</button>
+        <button class="btn-rediraction">Redirection symbols</button>
+        <button class="btn-end-of-two-process">End of two processes</button>
+        <button class="btn-end-of-three-process">End of three processes</button>
+      </div>
+      <button class="color">Color</button>
+      <button class="text">Text</button>
+      <button class="basket">Basket</button>
     </div>
-    <button class="color">Color</button>
-    <button class="text">Text</button>
-    <button class="basket">Basket</button>
   </div>
 
   <!--Showing blockes-->
 
   <div class="pr" hidden="true" style="margin-top: 100px">
-    <image width="200" height="150"></image>
+    <image width="200" height="150" src="./src/images/process.png"></image>
     <div class="show-name">Process</div>
   </div>
   <div class="pf" hidden="true" style="margin-top: 100px">
@@ -97,4 +104,5 @@
   <textarea class="text-area" hidden="true"></textarea>
   <canvas id="canvas"></canvas>
   <script type="module" src="src/index.js"></script>
+  <script type="module" src="src/components/btnNavbar.js"></script>
 </body>

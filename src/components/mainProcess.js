@@ -1,6 +1,0 @@
-
-const mainProcess = () => {
-
-}
-
-export {mainProcess}

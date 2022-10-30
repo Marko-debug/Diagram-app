@@ -1,6 +1,7 @@
 import {getButtons} from './components/ShowBlock.js';
 import {chooseShape} from './components/chooseShape.js'
 import {updateElement, updatePhysicalFlow} from './components/updateElement.js'
+import { zoom } from './components/zoom.js';
 
 // later, to make this navbar to be dynamic, that means, to move it wherever i want either with showing block and to minimazi and maximazi as well
 
@@ -303,6 +304,9 @@ window.addEventListener("load", (event)=>{
     canvas.onmouseup = finishDrawing;
     canvas.onmousemove = adjustment;
     // canvas.addEventListener('dblclick', writing);
+
+    // zoom in / zoom out
+    zoom(ctx, elements);
 
     //show window up after click on any button  
     for(const button of getButtons)

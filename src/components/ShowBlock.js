@@ -39,7 +39,7 @@ const ShowUp = (getButton) => {
 }
 
 const CloseShow = (getButton) => {
-    let getShowing = document.querySelector(`.${getButton.short}`);
+    const getShowing = document.querySelector(`.${getButton.short}`);
     getShowing.hidden = true;
 }
 
