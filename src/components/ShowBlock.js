@@ -1,5 +1,3 @@
-const information = [{name: "process", info: "it is basic"},{name: "physicall-flow", info: "physicall flow "}]
-
 const getBtnOfShapes = document.querySelector(".btn-process")
 const getBtnPhysFlow = document.querySelector(".btn-physically-flow")
 const getBtnInfoFlow = document.querySelector(".btn-information-flow")
@@ -14,6 +12,8 @@ const getBtnParallel = document.querySelector(".btn-parallel")
 const getBtnRediraction = document.querySelector(".btn-rediraction")
 const getBtnEndOfTwoProcess = document.querySelector(".btn-end-of-two-process")
 const getBtnEndOfThreeProcess = document.querySelector(".btn-end-of-three-process")
+
+const getText = document.querySelector(".text")
 
 const getButtons = [
     {ref: getBtnOfShapes, shape: "btn-process", short: "pr"}, 
@@ -30,6 +30,7 @@ const getButtons = [
     {ref: getBtnRediraction, shape: "btn-rediraction", short: "re"},
     {ref: getBtnEndOfTwoProcess, shape: "btn-end-of-two-process", short: "ep"},
     {ref: getBtnEndOfThreeProcess, shape: "btn-end-of-three-process", short: "eh"},
+    {ref: getText, shape: "text", short: "te"},
 ]
 
 const ShowUp = (getButton) => {

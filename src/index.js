@@ -1,8 +1,15 @@
 import {getButtons} from './components/ShowBlock.js';
 import {chooseShape} from './components/chooseShape.js'
-import {updateElement} from './components/updateElement.js'
+import {updateElement, updatePhysicalFlow} from './components/updateElement.js'
 
 // later, to make this navbar to be dynamic, that means, to move it wherever i want either with showing block and to minimazi and maximazi as well
+
+// inserting every shapes to the main process
+// to create action with inserting text
+// to create action with basket
+// to maximize and minimize view of window
+
+// try to change clientX and clientY to pageX and pageY (it should be relative positon of mouse)
 
 window.addEventListener("load", (event)=>{
     event.preventDefault();
@@ -18,7 +25,7 @@ window.addEventListener("load", (event)=>{
     // declared global variables
     const elements = [];
     let action = 'none';
-    let selectedElement;
+    let selectedElement = null;
 
     const nearPoint = (clientX, clientY, width, height, name) => {
         return Math.abs(clientX - width) < 5 && Math.abs(clientY - height) < 5 ? name : null;
@@ -27,9 +34,11 @@ window.addEventListener("load", (event)=>{
     const cursorForPosition = (position) =>{
         switch(position){
             case 'tl':
+            case 'start':
             case 'br':
                 return 'nwse-resize';
             case 'tr':
+            case 'end':
             case 'bl':
                 return 'nesw-resize';
             default:
@@ -41,15 +50,32 @@ window.addEventListener("load", (event)=>{
         const {position, width, height, width2, height2} = selectedElement;
         switch(position){
             case 'tl':
+            case 'start':
                 return {width: clientX, height: clientY, width2, height2};
             case 'tr':
                 return {width, height: clientY, width2: clientX, height2};
             case 'bl':
                 return {width: clientX, height, width2, height2: clientY};
             case 'br':
+            case 'end':
                 return {width, height, width2: clientX, height2: clientY};
             default:
                 return null; //should not really get here...
+        }
+    }
+
+    const getAngle = (width, height, width2, height2) => {
+        if(height2 > height){
+            return 90;
+        }
+        if (height2 === height && width2 > width){
+            return 0;
+        }
+        if(height2 < height){
+            return 270;
+        }
+        if(height2 === height && width2 < width){
+            return 180;
         }
     }
 
@@ -59,6 +85,14 @@ window.addEventListener("load", (event)=>{
             const inside = clientX >= width2 && clientX <= width3 && clientY >= height2 && clientY <= height3 ? "inside" : null;         
             return inside;
         }
+        else if(element.type === "physically-flow"){
+            const {width, height, width2, height2} = element;
+            const start = nearPoint(clientX, clientY, width, height, "start");
+            const end = nearPoint(clientX, clientY, width2, height2, "end");
+            const inside = clientX >= width && clientX <= width2 && clientY >= height && clientY <= height2 ? "inside" : null;     
+            // console.log(`clientX: ${clientX}, clientY: ${clientY}, width: ${width}, height: ${height}, width2: ${width2}, height2: ${height2}`)
+            return start || end || inside;
+        }
         else if(element.type === "process"){
             const {width, height, width2, height2} = element;
             const topLeft = nearPoint(clientX, clientY, width, height, "tl")
@@ -67,7 +101,13 @@ window.addEventListener("load", (event)=>{
             const bottomRight = nearPoint(clientX, clientY, width2, height2, "br")
             const inside = clientX >= width && clientX <= width2 && clientY >= height && clientY <= height2 ? "inside" : null;     
             return topLeft || topRight || bottomLeft || bottomRight || inside;
-        }else{
+        }
+        else if(element.type === "text"){
+            const {width, height, width2, height2} = element;
+            const inside = clientX >= width && clientX <= width2 && clientY >= height && clientY <= height2 ? "inside" : null;    
+            return inside;
+        }
+        else{
             const {width, height, width2, height2} = element;
             const inside = clientX >= width && clientX <= width2 && clientY >= height && clientY <= height2 ? "inside" : null;         
             return inside;
@@ -94,7 +134,7 @@ window.addEventListener("load", (event)=>{
                 const offSetY = clientY - element.height;
                 selectedElement = {...element, offSetX, offSetY};
             }
-            
+
             if(element.position === 'inside'){
                 action = "moving";
             }
@@ -109,31 +149,33 @@ window.addEventListener("load", (event)=>{
 
     const finishDrawing = (event) => {
         const {clientX, clientY} = event;
-        // const result = elements.filter(element => element.id !== selectedElement.id)
-        
-        // //basic is the process, which should be enlarged
-        // const basic = getElementAtPosition(clientX, clientY, result);
-        // if(basic && basic.type === "process"){
-        //     const {id, width, height, width2, height2, type, shapes} = basic;
-        //     const offSetX = clientX - width;
-        //     const offSetY = clientY - height;
-        //     const w = width2 - width;   
-        //     const h = height2 - height;
-        //     const nexX1 = clientX - offSetX;
-        //     const nexY1 = clientY - offSetY;
-            
-        //     //pushing to the array
-        //     shapes.push(selectedElement)
-        //     // console.log(shapes)
-        //     // console.log(`id: ${id}, nexX1: ${nexX1}, nexY1: ${nexY1}, w: ${w}, h: ${h}`)
-        //     // updateElement(id, nexX1, nexY1, w + 100, h + 100, type, 100, selectedElement);     !! fix w + 100 and h + 100 
-        //     updateElement(elements ,ctx,id, nexX1, nexY1, w, h, type, shapes, 100);
-            
-        //     const processes = elements.filter(element => element.type === "process")
-        //     let propertyOfProcesses = processes.map(process => process.w)
-        //     const theBiggest = Math.max(propertyOfProcesses)
-        //     console.log(theBiggest)
+        if(selectedElement === null)return;
+
+        // if(selectedElement.type === "text" && clientX - selectedElement.offsetX === selectedElement.x1 && clientY - selectedElement.offsetY === selectedElement.y1) {
+        //     action = "writing";
+        //     return;
         // }
+
+        const result = elements.filter(element => element.id !== selectedElement.id)
+        const basic = getElementAtPosition(clientX, clientY, result);
+        if(basic && basic.type === "process"){
+            const {shapes} = basic;
+            
+            //pushing to the array
+            const matched = shapes.filter(shape => shape.id === selectedElement.id)
+            console.log(shapes)
+            if(matched.length === 0){
+                shapes.push(selectedElement)
+                console.log('pushing another shape')
+            }
+
+            // updateElement(elements, ctx, id, width, height, w, h, type, shapes, 400, 300);
+            
+            // insert everey inserted shapes to the biggest process beacuse, when I move the main process then every element inside, will move
+            // const processes = result.filter(element => shapes.length > 0 && result.type === "process");
+            // const theBiggest = Math.max(processes.map(process => process.w));
+            // console.log(theBiggest.id);
+        }
         action = 'none';
     }
 
@@ -156,6 +198,20 @@ window.addEventListener("load", (event)=>{
                 const nexX1 = clientX - offSetX;
                 const nexY1 = clientY - offSetY;
                 updateElement(elements, ctx, id, nexX1, nexY1, w, h, type, shapes, increaseWidth + 300, increaseHeight + 200);
+            }else if(selectedElement.type === "text"){
+                const {id, width, height, width2, height2, type, offSetX, offSetY, text} = selectedElement;
+                const w = width2 - width;   
+                const h = height2 - height;
+                const nexX1 = clientX - offSetX;
+                const nexY1 = clientY - offSetY;
+                updateElement(elements, ctx, id, nexX1, nexY1, w, h, type, null, null, null, text);
+            }else if(selectedElement.type === "physically-flow"){
+                const {id, width, height, width2, height2, type, offSetX, offSetY, angle} = selectedElement;
+                const w = width2 - width;   
+                const h = height2 - height;
+                const nexX1 = clientX - offSetX;
+                const nexY1 = clientY - offSetY;
+                updatePhysicalFlow(elements, ctx,id, nexX1, nexY1, w, h, type, angle);
             }
             else{
                 const {id, width, height, width2, height2, type, offSetX, offSetY} = selectedElement;
@@ -175,16 +231,12 @@ window.addEventListener("load", (event)=>{
                 const {id, width, height, width2, height2, type, shapes} = enlarge;
                 const w = width2 - width;   
                 const h = height2 - height;
-                if(w === 300 && h === 200){
+                if(w === 300 && h === 200){  // 300 and 200 because, it is default size for inserting first element to process
                     const nexX1 = clientX - offSetX;
                     const nexY1 = clientY - offSetY;
-                    updateElement(elements, ctx,id, nexX1, nexY1, w, h, type, shapes, 400, 300);
-                    // if(enlarge && element.type === "process"){
-                    //     updateElement(id, nexX1, nexY1, w, h, type, 100, selectedElement);
-                    // }
+                    updateElement(elements, ctx,id, nexX1, nexY1, w + 100, h + 100, type, shapes, 400, 300);
                 }
             }
-
 
             // else if(selectedElement.type === "input"){
             //     const {id, width, height, width2, height2, type, offSetX, offSetY} = selectedElement;
@@ -201,15 +253,58 @@ window.addEventListener("load", (event)=>{
             // console.log(`id: ${id}, type: ${type}, width: ${width}, height: ${height}, width2: ${width2}, height2: ${height2}`);
             const w = width2 - width; 
             const h = height2 - height; 
-            updateElement(elements, ctx, id, width, height, w, h, type, shapes, w, h)
+            if(type === "physically-flow"){
+                const angle = getAngle(width, height, width2, height2)
+                // console.log(angle)
+                updatePhysicalFlow(elements, ctx, id, width, height, w, h, type, angle)
+            }
+            else{
+                updateElement(elements, ctx, id, width, height, w, h, type, shapes, w, h)
+            }
         }
     } 
+
+    // const writing = (event) => {
+    //     const {clientX, clientY} = event;
+    //     const element = getElementAtPosition(clientX, clientY, elements)
+    //     if(element && element.type === 'text'){
+    //         const getTextarea = document.querySelector(".text-area");
+    //         getTextarea.style.position = "fixed";
+    //         getTextarea.style.top = `${element.height}px`;
+    //         getTextarea.style.left = `${element.width}px`;
+    //         // getTextarea.onblur = handleBlur;
+    //         getTextarea.addEventListener("blur", handleBlur(event))
+    //         getTextarea.hidden = false;
+    //         getTextarea.value = element.text;
+    //         getTextarea.focus();
+    //     }
+    // }
+
+    // function handleBlur (event) {
+    //     const {clientX, clientY} = event;
+    //     const {id, width, height, width2, height2, type, offSetX, offSetY} = selectedElement;
+    //     console.log(clientX, clientY)
+    //     // const {id, width, height, type} = selectedElement;
+    //     const getTextarea = document.querySelector(".text-area");
+    //     const text = getTextarea.value;
+    //     const w = width2 - width;   
+    //     const h = height2 - height;
+    //     const nexX1 = clientX - offSetX;
+    //     const nexY1 = clientY - offSetY;
+    //     getTextarea.hidden = true;
+    //     selectedElement = null;
+    //     action = 'none';
+    //     updateElement(elements, ctx, id, nexX1, nexY1, w, h, type, null, null, null, text);
+    //     // updateElement(elements, ctx, id, width, height, null, null, type, null, null, null, text);
+    // }
 
     //adding functions to canvas
     canvas.onmousedown = startDrawing;
     canvas.onmouseup = finishDrawing;
     canvas.onmousemove = adjustment;
+    // canvas.addEventListener('dblclick', writing);
 
+    //show window up after click on any button  
     for(const button of getButtons)
     button.ref.addEventListener('click', () => chooseShape(button.shape, elements, ctx))
 })

@@ -44,7 +44,7 @@ export default class Process{
     }
 
     getShape(){
-        const {ctx, width, height, radius, increaseWidth, increaseHeight} = this;
+        const {ctx, width, height, radius, increaseWidth, increaseHeight, shapes} = this;
         // to made verification at increasing condition, beacause it is possible to insert in bigger process than 100 as well
         
         if(increaseWidth === 100 && increaseHeight === 100){    
@@ -103,6 +103,8 @@ export default class Process{
             ctx.arcTo(width + 175, height + 140 + increaseHeight, width, height + 140 + increaseHeight, radius);
             ctx.arcTo(width, height + 140 + increaseHeight, width, height + 200 + increaseHeight, radius);
             ctx.stroke();
+
+            // console.log(shapes)
         }
         else{
             //main round rectangle
