@@ -20,4 +20,14 @@ export default class EventTransition{
         ctx.arcTo(width, height, width, height + 50, radius)
         ctx.stroke();
     }
+    selected(){
+        const{ctx, width, height, width2, height2} = this;
+        ctx.fillStyle = 'rgb(0, 172, 230)';
+        ctx.beginPath();
+        ctx.arc(width, height, 6, 0, 2 * Math.PI);
+        ctx.arc(width2, height, 6, 0, 2 * Math.PI);
+        ctx.arc(width, height2, 6, 0, 2 * Math.PI);
+        ctx.arc(width2, height2, 6, 0, 2 * Math.PI);
+        ctx.fill();
+    }
 }

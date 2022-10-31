@@ -12,7 +12,7 @@ export default class PhysicallyFlow{
     }
     
     getShape(){
-        const{ctx, width, height, width2, height2, w, angle} = this;
+        const{ctx, width, height, width2, height2, angle} = this;
         ctx.beginPath();
         ctx.moveTo(width, height);
         ctx.lineTo(width2 - 15, height2);
@@ -23,17 +23,38 @@ export default class PhysicallyFlow{
         // ctx.lineTo(width2 - 15, height2);
         // ctx.stroke();
 
-        ctx.save()
         ctx.beginPath();
+        ctx.fillStyle = 'black';
+        ctx.save()
         ctx.translate(width2 - 15, height2);
         ctx.rotate(angle*(Math.PI/180));   // 0 is a start and the 359 is the end
         ctx.translate(-(width2 -15), -height2);
         ctx.moveTo(width2, height2);
         ctx.lineTo(width2 - 15, height2 - 7);
         ctx.lineTo(width2 - 15, height2 + 7);
-        ctx.closePath()
         ctx.fill();
         ctx.restore()
+        ctx.closePath()
+
+    }
+    
+    selected(){
+        const{ctx, width, height, width2, height2} = this;
+        ctx.beginPath();
+        ctx.fillStyle = 'rgb(0, 172, 230)';
+        if(width2 > width) ctx.arc(width - 10, height, 6, 0, 2 * Math.PI);
+        else ctx.arc(width + 10, height, 6, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.closePath()
+        ctx.beginPath();
+        ctx.arc((width2 - width)/2 + width, (height2 - height)/2 + height, 6, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.closePath()
+        ctx.beginPath();
+        if(width2 > width) ctx.arc(width2, height2, 6, 0, 2 * Math.PI);
+        else  ctx.arc(width2 - 30, height2, 6, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.closePath()
     }
 }
     // const form = document.createElement("form")

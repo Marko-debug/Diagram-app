@@ -1,3 +1,5 @@
+// in the browser is possible to zoom with Shift-key and mouseWheel up / down
+
 const zoom = (ctx, elements) =>{
     const btnZoomIn = document.querySelector(".zoom-in");
     const btnZoomOut = document.querySelector(".zoom-out");

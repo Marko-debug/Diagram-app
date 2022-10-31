@@ -1,7 +1,6 @@
 const navbar = document.querySelector(".btn-navbar");
 const navbarInner = document.querySelector(".navbar-inner");
 navbar.addEventListener("click", ()=>{
-    console.log(navbarInner)
     if(navbarInner.hidden === false){
         document.querySelector(".navbar").style.width = "60px";
         document.querySelector(".navbar").style.height = "60px";

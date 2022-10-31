@@ -27,8 +27,8 @@ const chooseShape = (shape, elements, ctx) =>{
    }
    if(shape === "btn-physically-flow"){
 
-        const width = 500;
-        const height = 60;
+        const width = 550;
+        const height = 150;
         const angle = 0;
         const type = "physically-flow";
        const element = new PhysicallyFlow(id, ctx, type, width, height, width + 200, height, 200, angle)

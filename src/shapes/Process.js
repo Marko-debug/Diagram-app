@@ -81,7 +81,6 @@ export default class Process{
         }
         else{
             //main round rectangle
-
             ctx.beginPath();
             ctx.moveTo(width, height + 9);
             ctx.arcTo(width, height + 200, width + 300, height + 200, radius);
@@ -104,6 +103,28 @@ export default class Process{
             ctx.arcTo(width + 175, height + 140, width, height + 140, radius);
             ctx.arcTo(width, height + 140, width, height + 200, radius);
             ctx.stroke();
+            ctx.closePath();
         }
+    }
+
+    selected(){
+        const{ctx, width, height, width2, height2} = this;
+        ctx.beginPath();
+        ctx.fillStyle = 'rgb(0, 172, 230)';
+        ctx.arc(width, height, 6, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.closePath();
+        ctx.beginPath();
+        ctx.arc(width2, height, 6, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.closePath();
+        ctx.beginPath();
+        ctx.arc(width, height2, 6, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.closePath();
+        ctx.beginPath();
+        ctx.arc(width2, height2, 6, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.closePath();
     }
 }
