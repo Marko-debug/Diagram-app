@@ -1,5 +1,5 @@
 export default class Process{
-     constructor(id, ctx, type, width, height, width2, height2, w, radius, shapes, increaseWidth, increaseHeight){
+     constructor(id, ctx, type, width, height, width2, height2, w, radius, shapes, increaseWidth, increaseHeight, connectArrow){
         this.id = id;
         this.ctx = ctx;
         this.type = type;
@@ -12,24 +12,46 @@ export default class Process{
         this.increaseWidth = increaseWidth;
         this.increaseHeight = increaseHeight;
         this.shapes = shapes;
+        this.connectArrow = connectArrow;
     }
 
     getShape(){
-        const {ctx, width, height, radius, increaseWidth, increaseHeight, shapes} = this;
-        // to made verification at increasing condition, beacause it is possible to insert in bigger process than 100 as well
+        const {ctx, width, height, radius, increaseWidth, increaseHeight, shapes, connectArrow} = this;
+        
+        // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Applying_styles_and_colors
+        // let offset = 0;
+        // function draw() {
+        // ctx.setLineDash([4, 2]);
+        // ctx.lineDashOffset = -offset;
+        // ctx.strokeRect(width + 50, height + 80, 300, 200);
+        // }
 
-        // ctx.lineWidth = 6;
+        // function march() {
+        // offset++;
+        // if (offset > 16) {
+        //     offset = 0;
+        // }
+        // draw();
+        // setTimeout(march, 20);
+        // }
+
+        // march();
         
         if(increaseWidth === 100 && increaseHeight === 100){    
-            
+
             //main round rectangle
             ctx.beginPath();
+            ctx.fillStyle = 'black';
             ctx.moveTo(width, height + 9);
             ctx.arcTo(width, height + 200 + increaseHeight, width + 300 + increaseWidth, height + 200 + increaseHeight, radius);
             ctx.arcTo(width + 300 + increaseWidth, height + 200 + increaseHeight, width + 300 + increaseWidth, height, radius);
             ctx.arcTo(width + 300 + increaseWidth, height, width, height, radius);
             ctx.arcTo(width, height, width, height + 200 + increaseHeight, radius);
+            ctx.font = '28px serif';
+            ctx.fillText('INSERT', width + 150, height + 170)
             ctx.stroke();
+
+
 
             //expected time
             ctx.beginPath();
@@ -37,8 +59,6 @@ export default class Process{
             ctx.arcTo(width + 125 + increaseWidth, height, width + 125 + increaseWidth, height + 60, radius);
             ctx.arcTo(width + 125 + increaseWidth, height + 60, width + 300 + increaseWidth, height + 60, radius);
             ctx.arcTo(width + 300 + increaseWidth, height + 60, width + 300 + increaseWidth, height, radius);
-            ctx.font = '28px serif';
-            ctx.fillText('INSERT', width + 150, height + 170)
             ctx.stroke();
 
             //process owner
@@ -104,6 +124,8 @@ export default class Process{
             ctx.arcTo(width, height + 140, width, height + 200, radius);
             ctx.stroke();
             ctx.closePath();
+
+            // console.log(connectArrow)
         }
     }
 

@@ -1,6 +1,6 @@
 import {getButtons} from './components/ShowBlock.js';
 import {chooseShape} from './components/chooseShape.js'
-import {updateElement, updatePhysicalFlow} from './components/updateElement.js'
+import {updateElement, updateElementWithAngle} from './components/updateElement.js'
 import { zoom } from './components/zoom.js';
 import { grid } from './components/grid.js';
 import { join } from './components/joining.js';
@@ -44,6 +44,8 @@ window.addEventListener("load", (event)=>{
             case 'end':
             case 'bl':
                 return 'nesw-resize';
+            case 'turn':
+                return 'grab';
             default:
                 return 'move';
         }
@@ -114,6 +116,29 @@ window.addEventListener("load", (event)=>{
             const inside = pageX >= width && pageX <= width2 && pageY >= height && pageY <= height2 ? "inside" : null;    
             return inside;
         }
+        else if(element.type === "input"){
+            const {width, height, width2, height2, angle} = element;
+            if (0 <= angle <= 45) {
+                const turn = nearPoint(pageX, pageY, width2 + 30, height2 - 30, "turn");
+                const inside = pageX >= width && pageX <= width2 && pageY >= height && pageY <= height2 ? "inside" : null;         
+                return inside || turn;
+            }
+            else if (45 < angle <= 120 ){
+                const turn = nearPoint(pageX, pageY, width2 + 30 , height2 + 30, "turn");
+                const inside = pageX >= width && pageX <= width2 && pageY >= height && pageY <= height2 ? "inside" : null;         
+                return inside || turn;
+            }
+            else if (120 < angle <= 225 ){
+                const turn = nearPoint(pageX, pageY, width2 - 30 , height2 + 30, "turn");
+                const inside = pageX >= width && pageX <= width2 && pageY >= height && pageY <= height2 ? "inside" : null;         
+                return inside || turn;
+            }
+            else if (225 < angle <= 360 ){
+                const turn = nearPoint(pageX, pageY, width2 - 30 , height2 - 30, "turn");
+                const inside = pageX >= width && pageX <= width2 && pageY >= height && pageY <= height2 ? "inside" : null;         
+                return inside || turn;
+            }
+        }
         else{
             const {width, height, width2, height2} = element;
             const inside = pageX >= width && pageX <= width2 && pageY >= height && pageY <= height2 ? "inside" : null;         
@@ -125,6 +150,11 @@ window.addEventListener("load", (event)=>{
         return elements
             .map(element => ({...element, position: positionWithinElement(pageX, pageY, element)}))
             .find(element => element.position !== null)
+    }
+
+    const nearElement = (pageX, pageY, result) => {
+            const join = result.find(element => pageX >= element.width - 5 && pageX <= element.width + 5 && pageY >= element.height -5 && pageY <= element.height + 5);
+            return join ? join : null
     }
 
     const startDrawing = (event) => {
@@ -142,11 +172,10 @@ window.addEventListener("load", (event)=>{
                 selectedElement = {...element, offSetX, offSetY};
             }
 
-            if(element.position === 'inside'){
-                action = "moving";
-            }else{
-                action = "resizing";
-            }
+            if(element.position === 'inside')action = "moving";
+            else if(element.position === "turn") action = " turning";
+            else  action = "resizing";
+            
             // if(element.position === 'start'){ 
             //     action = "rotation"
             // }
@@ -178,10 +207,10 @@ window.addEventListener("load", (event)=>{
                 
                 //pushing to the array
                 const matched = shapes.filter(shape => shape.id === selectedElement.id)
-                console.log(shapes)
+                // console.log(shapes)
                 if(matched.length === 0){
                     shapes.push(selectedElement)
-                    console.log('pushing another shape')
+                    // console.log('pushing another shape')
                 }
     
                 // updateElement(elements, ctx, id, width, height, w, h, type, shapes, 400, 300);
@@ -214,12 +243,19 @@ window.addEventListener("load", (event)=>{
                 const nexY1 = pageY - offSetY;
                 updateElement(elements, ctx, id, nexX1, nexY1, w, h, type);
             }else if(selectedElement.type === "process"){
-                const {id, width, height, width2, height2, type, offSetX, offSetY, shapes, increaseWidth, increaseHeight} = selectedElement;
+                const {id, width, height, width2, height2, type, offSetX, offSetY, shapes, increaseWidth, increaseHeight, connectArrow} = selectedElement;
                 const w = width2 - width;   
                 const h = height2 - height;
                 const nexX1 = pageX - offSetX;
                 const nexY1 = pageY - offSetY;
-                updateElement(elements, ctx, id, nexX1, nexY1, w, h, type, shapes, increaseWidth + 300, increaseHeight + 200);
+                if(connectArrow){
+                    updateElement(elements, ctx, id, nexX1, nexY1, w, h, type, shapes, increaseWidth + 300, increaseHeight + 200, connectArrow);
+                    const wArrow = nexX1 - connectArrow.width;
+                    const hArrow = nexY1 - connectArrow.height;
+                    updateElementWithAngle(elements, ctx, connectArrow.id, connectArrow.width, connectArrow.height, wArrow, hArrow, connectArrow.type, connectArrow.shapes, connectArrow.increaseWidth, connectArrow.increaseHeight, connectArrow.connect);
+                }else{
+                    updateElement(elements, ctx, id, nexX1, nexY1, w, h, type, shapes, increaseWidth + 300, increaseHeight + 200);
+                }
             }else if(selectedElement.type === "text"){
                 const {id, width, height, width2, height2, type, offSetX, offSetY, text} = selectedElement;
                 const w = width2 - width;   
@@ -233,9 +269,16 @@ window.addEventListener("load", (event)=>{
                 const h = height2 - height;
                 const nexX1 = pageX - offSetX;
                 const nexY1 = pageY - offSetY;
-                updatePhysicalFlow(elements, ctx,id, nexX1, nexY1, w, h, type, angle);
+                updateElementWithAngle(elements, ctx, id, nexX1, nexY1, w, h, type, angle);
             }
-            else{
+            else if(selectedElement.type === "input"){
+                const {id, width, height, width2, height2, type, offSetX, offSetY, angle} = selectedElement;
+                const w = width2 - width;   
+                const h = height2 - height;
+                const nexX1 = pageX - offSetX;
+                const nexY1 = pageY - offSetY;
+                updateElementWithAngle(elements, ctx,id, nexX1, nexY1, w, h, type, angle);
+            }else {
                 const {id, width, height, width2, height2, type, offSetX, offSetY} = selectedElement;
                 const w = width2 - width;   
                 const h = height2 - height;
@@ -269,6 +312,9 @@ window.addEventListener("load", (event)=>{
             //     updateElement(id, nexX1, nexY1, nexX1 + w, nexY1 + h, type , nexX1 + w + h, (nexY1 + h)/2);
             // }
         }
+        else if(action === "turning"){
+            
+        }
         else if(action === "resizing"){
             const {id, type, shapes} = selectedElement;
             const {width, height, width2, height2} = resizedCoordinates(pageX, pageY);
@@ -276,12 +322,24 @@ window.addEventListener("load", (event)=>{
             const w = width2 - width; 
             const h = height2 - height; 
             if(type === "physically-flow"){
-                const angle = getAngle(width, height, width2, height2)
-                // console.log(angle)
-                updatePhysicalFlow(elements, ctx, id, width, height, w, h, type, angle)
+                const angle = getAngle(width, height, width2, height2);
+                const result = elements.filter(element => element.id !== selectedElement.id);
+                const connect = nearElement(pageX, pageY, result);
+                console.log(connect)
+                updateElementWithAngle(elements, ctx, id, width, height, w, h, type, angle, connect);
+                if(connect){
+                    const connectw = connect.width2 - connect.width;
+                    const connecth = connect.height2 - connect.height;
+                    updateElement(elements, ctx, connect.id, connect.width, connect.height, connectw, connecth, connect.type, connect.shapes, connect.increaseWidth, connect.increaseHeight, null, selectedElement);
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    elements.forEach(element => {
+                        element.getShape()
+                        if(element.id === selectedElement.id)element.joining(); // to show green dot for connecting
+                    })  
+                }
             }
             else{
-                updateElement(elements, ctx, id, width, height, w, h, type, shapes, w, h)
+                updateElement(elements, ctx, id, width, height, w, h, type, shapes, w, h);
             }
         }
     } 
@@ -329,6 +387,7 @@ window.addEventListener("load", (event)=>{
     // zoom in / zoom out
     zoom(ctx, elements);
     
+    //to make grid on canvas
     const btnGrid = document.querySelector(".grid")
     btnGrid.addEventListener('click', ()  => grid(ctx))
 

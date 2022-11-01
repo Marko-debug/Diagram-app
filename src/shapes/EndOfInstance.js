@@ -20,4 +20,7 @@ export default class EndOfInstance{
         ctx.fillText('E', width - 10, height + 10)
         ctx.stroke();
     }
+    selected(){
+        
+    }
 }

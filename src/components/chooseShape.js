@@ -2,7 +2,7 @@ import Process from '../shapes/Process.js'
 import PhysicallyFlow from '../shapes/PhysicallyFlow.js'
 import {informationFlow} from '../shapes/InformationFlow.js'
 import Input from '../shapes/Input.js';
-// import Output from '../shapes/Output.js';
+import Output from '../shapes/Output.js';
 import EndOfInstance from '../shapes/EndOfInstance.js';
 import EventTransition from '../shapes/EventTransition.js';
 // import TwoBranches from '../shapes/TwoBranches.js';
@@ -40,15 +40,19 @@ const chooseShape = (shape, elements, ctx) =>{
        elements.push(element)
    }
    if(shape === 'btn-input'){
-
        const width = 500;
        const height = 60;
+       const angle = 0;
        const type = "input";
-       const element = new Input(id, ctx, type, width, height, width + 180, height + 60, 3);
+       const element = new Input(id, ctx, type, width, height, width + 180, height + 60, 3, angle);
        elements.push(element)
    }
    if(shape === 'btn-output'){
-       //rectangle(ctx)
+        const width = 500;
+        const height = 60;
+        const type = "output";
+        const element = new Output(id, ctx, type, width, height, width + 180, height + 60, 3);
+        elements.push(element)
    }
 
    if(shape === 'btn-end-of-instance'){

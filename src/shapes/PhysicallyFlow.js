@@ -1,5 +1,5 @@
 export default class PhysicallyFlow{
-    constructor(id, ctx, type, width, height, width2, height2, w, angle){
+    constructor(id, ctx, type, width, height, width2, height2, w, angle, connect){
        this.id = id;
        this.ctx = ctx;
        this.type = type;
@@ -9,6 +9,7 @@ export default class PhysicallyFlow{
        this.height2 = height2;
        this.w = w;
        this.angle = angle;
+       this.connect = connect;
     }
     
     getShape(){
@@ -35,7 +36,6 @@ export default class PhysicallyFlow{
         ctx.fill();
         ctx.restore()
         ctx.closePath()
-
     }
     
     selected(){
@@ -55,6 +55,16 @@ export default class PhysicallyFlow{
         else  ctx.arc(width2 - 30, height2, 6, 0, 2 * Math.PI);
         ctx.fill();
         ctx.closePath()
+    }
+    joining(){
+        const{ctx, width2, height2, connect} = this;
+        if(connect){
+            ctx.beginPath();
+            ctx.fillStyle = 'rgb(193, 240, 193)';
+            ctx.arc(width2, height2, 10, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.closePath()
+        }
     }
 }
     // const form = document.createElement("form")
