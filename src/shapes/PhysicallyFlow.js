@@ -1,5 +1,5 @@
 export default class PhysicallyFlow{
-    constructor(id, ctx, type, width, height, width2, height2, w, angle, connect){
+    constructor(id, ctx, type, width, height, width2, height2, centerW, centerH, w, h, angle, connect){
        this.id = id;
        this.ctx = ctx;
        this.type = type;
@@ -7,18 +7,31 @@ export default class PhysicallyFlow{
        this.height = height;
        this.width2 = width2;
        this.height2 = height2;
+       this.centerW = centerW;
+       this.centerH = centerH;
        this.w = w;
+       this.h = h;
        this.angle = angle;
        this.connect = connect;
     }
     
     getShape(){
-        const{ctx, width, height, width2, height2, angle} = this;
-        ctx.beginPath();
-        ctx.moveTo(width, height);
-        ctx.lineTo(width2 - 15, height2);
-        ctx.stroke();
-
+        const{ctx, width, height, width2, height2, w, h, angle} = this;
+        // if(){
+            ctx.beginPath();
+            ctx.moveTo(width, height);
+            ctx.lineTo(width2 - 15, height);
+            ctx.lineTo(width2 - 15, height2);
+            ctx.stroke();
+        // }else{
+        //     ctx.beginPath();
+        //     ctx.moveTo(width, height);
+        //     ctx.lineTo(width, height + 30);
+        //     ctx.lineTo(width2 - 15, height + 30);
+        //     ctx.lineTo(width2 - 15, height2);
+        //     ctx.stroke();
+        // }
+            
         // ctx.beginPath();
         // ctx.moveTo(width2 - 30, height2);
         // ctx.lineTo(width2 - 15, height2);
@@ -39,23 +52,33 @@ export default class PhysicallyFlow{
     }
     
     selected(){
-        const{ctx, width, height, width2, height2} = this;
+        const{ctx, width, height, width2, height2, w, h} = this;
         ctx.beginPath();
         ctx.fillStyle = 'rgb(0, 172, 230)';
         if(width2 > width) ctx.arc(width - 10, height, 6, 0, 2 * Math.PI);
         else ctx.arc(width + 10, height, 6, 0, 2 * Math.PI);
         ctx.fill();
         ctx.closePath()
-        ctx.beginPath();
-        ctx.arc((width2 - width)/2 + width, (height2 - height)/2 + height, 6, 0, 2 * Math.PI);
+        // ctx.beginPath(); // moving Horizontal
+        // ctx.arc(w/2 + width, height, 6, 0, 2 * Math.PI);
+        // ctx.fill();
+        // ctx.closePath()
+        ctx.beginPath(); // moving
+        ctx.arc(width2 - 15, height, 6, 0, 2 * Math.PI);
         ctx.fill();
         ctx.closePath()
+        // ctx.beginPath(); // moving Vertical
+        // ctx.arc(width2 - 15, h/2 + height, 6, 0, 2 * Math.PI);
+        // ctx.fill();
+        // ctx.closePath()
         ctx.beginPath();
         if(width2 > width) ctx.arc(width2, height2, 6, 0, 2 * Math.PI);
         else  ctx.arc(width2 - 30, height2, 6, 0, 2 * Math.PI);
         ctx.fill();
         ctx.closePath()
     }
+
+    // for showing the green dots
     joining(){
         const{ctx, width2, height2, connect} = this;
         if(connect){

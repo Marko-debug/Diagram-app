@@ -42,7 +42,7 @@ const updateElement = (elements, ctx, id, nexX1, nexY1, w, h, type, shapes, incr
 const updateElementWithAngle = (elements, ctx, id, nexX1, nexY1, w, h, type, angle, connect) => {
     
     if(type === "physically-flow"){
-        elements[id] = new PhysicallyFlow(id, ctx, type, nexX1, nexY1, nexX1 + w, nexY1 + h, w, angle, connect);
+        elements[id] = new PhysicallyFlow(id, ctx, type, nexX1, nexY1, nexX1 + w, nexY1 + h, nexX1 + w - 15, nexY1, w, h, angle, connect);
     }
     else if(type === "input"){
         elements[id] = new Input(id, ctx, type, nexX1, nexY1, nexX1 + w, nexY1 + h, 3);

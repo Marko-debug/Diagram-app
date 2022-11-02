@@ -44,6 +44,10 @@ window.addEventListener("load", (event)=>{
             case 'end':
             case 'bl':
                 return 'nesw-resize';
+            case 'movingHorizontal':
+                return 'row-resize';
+            case 'movingVertical':
+                return 'col-resize';
             case 'turn':
                 return 'grab';
             default:
@@ -69,22 +73,18 @@ window.addEventListener("load", (event)=>{
         }
     }
 
-    const getAngle = (width, height, width2, height2) => {
-        const widthMinus = (width2 - 15) - width;
-        if(height2 > height && widthMinus === 0){
-            return 90;
+    const getAngle = (width, height, width2, height2, centerW) => {
+        if(height2 < height &&  width2 - 15 === centerW){
+            return 270;
         }
         else if (height2 === height && width2 > width){
             return 0;
         }
-        else if(height2 < height && widthMinus === 0){
-            return 270;
+        else if(height2 > height && width2 - 15 === centerW){
+            return 90;
         }
         else if(height2 === height && width2 < width){
             return 180;
-        }
-        else {
-            return 0;
         }
     }
 
@@ -95,11 +95,13 @@ window.addEventListener("load", (event)=>{
             return inside;
         }
         else if(element.type === "physically-flow"){
-            const {width, height, width2, height2} = element;
+            const {width, height, width2, height2, centerW, centerH} = element;
             const start = nearPoint(pageX, pageY, width, height, "start");
             const end = nearPoint(pageX, pageY, width2, height2, "end");
-            const inside = pageX >= width && pageX <= width2 && pageY >= height && pageY <= height2 ? "inside" : null;     
-            // console.log(`pageX: ${pageX}, pageY: ${pageY}, width: ${width}, height: ${height}, width2: ${width2}, height2: ${height2}`)
+            // const movingHorizontal = nearPoint(pageX, pageY, w/2 + width, height, "movingHorizontal"); 
+            // const movingVertical = nearPoint(pageX, pageY, width2 - 15, h/2 + height,"movingVertical");
+            const inside = nearPoint(pageX, pageY, centerW, centerH, "inside");     
+            // console.log(`pageX: ${pageX}, pageY: ${pageY}, width: ${centerW}, height: ${centerH}`)
             return start || end || inside;
         }
         else if(element.type === "process"){
@@ -173,6 +175,8 @@ window.addEventListener("load", (event)=>{
             }
 
             if(element.position === 'inside')action = "moving";
+            else if(element.position === "movingHorizontal") action = " movingHorizontal";
+            else if(element.position === "movingVertical") action = " movingVertical";
             else if(element.position === "turn") action = " turning";
             else  action = "resizing";
             
@@ -233,6 +237,7 @@ window.addEventListener("load", (event)=>{
     const adjustment = (event) => {
         const {pageX, pageY} = event;
         const element = getElementAtPosition(pageX, pageY, elements);
+        if(element)console.log(element.position)
         event.target.style.cursor = element ?  cursorForPosition(element.position) : "default";
         if(action === "moving"){
             if(selectedElement.type === "end-of-instance"){
@@ -249,9 +254,9 @@ window.addEventListener("load", (event)=>{
                 const nexX1 = pageX - offSetX;
                 const nexY1 = pageY - offSetY;
                 if(connectArrow){
-                    updateElement(elements, ctx, id, nexX1, nexY1, w, h, type, shapes, increaseWidth + 300, increaseHeight + 200, connectArrow);
+                    updateElement(elements, ctx, id, nexX1, nexY1, w, h, type, shapes, increaseWidth + 300, increaseHeight + 200, null, connectArrow);
                     const wArrow = nexX1 - connectArrow.width;
-                    const hArrow = nexY1 - connectArrow.height;
+                    const hArrow = nexY1 - connectArrow.height;                
                     updateElementWithAngle(elements, ctx, connectArrow.id, connectArrow.width, connectArrow.height, wArrow, hArrow, connectArrow.type, connectArrow.shapes, connectArrow.increaseWidth, connectArrow.increaseHeight, connectArrow.connect);
                 }else{
                     updateElement(elements, ctx, id, nexX1, nexY1, w, h, type, shapes, increaseWidth + 300, increaseHeight + 200);
@@ -312,6 +317,12 @@ window.addEventListener("load", (event)=>{
             //     updateElement(id, nexX1, nexY1, nexX1 + w, nexY1 + h, type , nexX1 + w + h, (nexY1 + h)/2);
             // }
         }
+        else if(action === "movingHorizontal"){
+            
+        }
+        else if(action === "movingVertical"){
+            console.log("bingo")
+        }
         else if(action === "turning"){
             
         }
@@ -322,21 +333,20 @@ window.addEventListener("load", (event)=>{
             const w = width2 - width; 
             const h = height2 - height; 
             if(type === "physically-flow"){
-                const angle = getAngle(width, height, width2, height2);
-                const result = elements.filter(element => element.id !== selectedElement.id);
-                const connect = nearElement(pageX, pageY, result);
-                console.log(connect)
-                updateElementWithAngle(elements, ctx, id, width, height, w, h, type, angle, connect);
-                if(connect){
-                    const connectw = connect.width2 - connect.width;
-                    const connecth = connect.height2 - connect.height;
-                    updateElement(elements, ctx, connect.id, connect.width, connect.height, connectw, connecth, connect.type, connect.shapes, connect.increaseWidth, connect.increaseHeight, null, selectedElement);
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    elements.forEach(element => {
-                        element.getShape()
-                        if(element.id === selectedElement.id)element.joining(); // to show green dot for connecting
-                    })  
-                }
+                const angle = getAngle(width, height, width2, height2, width2 - 15);
+                // const result = elements.filter(element => element.id !== selectedElement.id);
+                // const connect = nearElement(pageX, pageY, result);
+                updateElementWithAngle(elements, ctx, id, width, height, w, h, type, angle); // for working it have to be like that (elements, ctx, id, width, height, w, h, type, angle, connect)
+                // if(connect){
+                //     const connectw = connect.width2 - connect.width;
+                //     const connecth = connect.height2 - connect.height;
+                //     updateElement(elements, ctx, connect.id, connect.width, connect.height, connectw, connecth, connect.type, connect.shapes, connect.increaseWidth, connect.increaseHeight, null, selectedElement);
+                //     ctx.clearRect(0, 0, canvas.width, canvas.height);
+                //     elements.forEach(element => {
+                //         element.getShape()
+                //         if(element.id === selectedElement.id)element.joining(); // to show green dot for connecting
+                //     })  
+                // }
             }
             else{
                 updateElement(elements, ctx, id, width, height, w, h, type, shapes, w, h);
