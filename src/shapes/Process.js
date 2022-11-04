@@ -1,5 +1,5 @@
 export default class Process{
-     constructor(id, ctx, type, width, height, width2, height2, w, radius, shapes, increaseWidth, increaseHeight, connectArrow){
+     constructor(id, ctx, type, width, height, width2, height2, w, radius, shapes, increaseWidth, increaseHeight, connectArrows){
         this.id = id;
         this.ctx = ctx;
         this.type = type;
@@ -12,11 +12,11 @@ export default class Process{
         this.increaseWidth = increaseWidth;
         this.increaseHeight = increaseHeight;
         this.shapes = shapes;
-        this.connectArrow = connectArrow;
+        this.connectArrows = connectArrows;
     }
 
     getShape(){
-        const {ctx, width, height, radius, increaseWidth, increaseHeight, shapes, connectArrow} = this;
+        const {ctx, width, height, radius, increaseWidth, increaseHeight, shapes} = this;
         
         // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Applying_styles_and_colors
         // let offset = 0;
@@ -108,6 +108,7 @@ export default class Process{
             ctx.arcTo(width + 300, height, width, height, radius);
             ctx.arcTo(width, height, width, height + 200, radius);
             ctx.stroke();
+
             //expected time
             ctx.beginPath();
             ctx.moveTo(width + 200, height);

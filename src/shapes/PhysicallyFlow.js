@@ -1,5 +1,5 @@
 export default class PhysicallyFlow{
-    constructor(id, ctx, type, width, height, width2, height2, centerW, centerH, w, h, angle, connect){
+    constructor(id, ctx, type, width, height, width2, height2, centerW, centerH, w, h, angle, connect, position){
        this.id = id;
        this.ctx = ctx;
        this.type = type;
@@ -13,6 +13,7 @@ export default class PhysicallyFlow{
        this.h = h;
        this.angle = angle;
        this.connect = connect;
+       this.position = position;
     }
     
     getShape(){
@@ -80,15 +81,19 @@ export default class PhysicallyFlow{
 
     // for showing the green dots
     joining(){
-        const{ctx, width2, height2, connect} = this;
+        const{ctx, width2, height2, connect, angle} = this;
         if(connect){
             ctx.beginPath();
             ctx.fillStyle = 'rgb(193, 240, 193)';
-            ctx.arc(width2, height2, 10, 0, 2 * Math.PI);
+            if(angle === 0)ctx.arc(width2, height2, 10, 0, 2 * Math.PI);
+            if(angle === 90)ctx.arc(width2 - 15, height2 + 10, 10, 0, 2 * Math.PI);
+            if(angle === 180)ctx.arc(width2, height2, 10, 0, 2 * Math.PI);
+            if(angle === 270)ctx.arc(width2 - 15, height2 - 10, 10, 0, 2 * Math.PI); 
             ctx.fill();
             ctx.closePath()
         }
     }
+    
 }
     // const form = document.createElement("form")
     // const input = document.createElement("input");

@@ -13,9 +13,9 @@ import EventTransition from '../shapes/EventTransition.js';
 // import EndOfThreeProcess from '../shapes/EndOfThreeProcess.js';
 import Text from '../shapes/Text.js';
 
-const updateElement = (elements, ctx, id, nexX1, nexY1, w, h, type, shapes, increaseWidth, increaseHeight, text, connectArrow) => {
+const updateElement = (elements, ctx, id, nexX1, nexY1, w, h, type, shapes, increaseWidth, increaseHeight, text, connectArrows) => {
     if(type === "process"){
-        elements[id] = new Process(id, ctx, type, nexX1, nexY1, nexX1 + w, nexY1 + h, w, 10, shapes, increaseWidth - 300, increaseHeight - 200, connectArrow);
+        elements[id] = new Process(id, ctx, type, nexX1, nexY1, nexX1 + w, nexY1 + h, w, 10, shapes, increaseWidth - 300, increaseHeight - 200, connectArrows);
     }
     else if(type === "output"){
         elements[id] = new Output(id, ctx, type, nexX1, nexY1, nexX1 + w, nexY1 + h, 3);
@@ -39,10 +39,10 @@ const updateElement = (elements, ctx, id, nexX1, nexY1, w, h, type, shapes, incr
     })
 }
 
-const updateElementWithAngle = (elements, ctx, id, nexX1, nexY1, w, h, type, angle, connect) => {
+const updateElementWithAngle = (elements, ctx, id, nexX1, nexY1, w, h, type, angle, connect, position) => {
     
     if(type === "physically-flow"){
-        elements[id] = new PhysicallyFlow(id, ctx, type, nexX1, nexY1, nexX1 + w, nexY1 + h, nexX1 + w - 15, nexY1, w, h, angle, connect);
+        elements[id] = new PhysicallyFlow(id, ctx, type, nexX1, nexY1, nexX1 + w, nexY1 + h, nexX1 + w - 15, nexY1, w, h, angle, connect, position);
     }
     else if(type === "input"){
         elements[id] = new Input(id, ctx, type, nexX1, nexY1, nexX1 + w, nexY1 + h, 3);

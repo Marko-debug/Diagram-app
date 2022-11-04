@@ -22,7 +22,8 @@ const chooseShape = (shape, elements, ctx) =>{
        const height = 60;
        const type = "process";
        const shapes = [];
-       const element = new Process(id, ctx, type, width, height, width + 300, height + 200, 300, 10, shapes);
+       const connectedArrows = [];
+       const element = new Process(id, ctx, type, width, height, width + 300, height + 200, 300, 10, shapes, null, null, connectedArrows);
        elements.push(element)
    }
    if(shape === "btn-physically-flow"){
