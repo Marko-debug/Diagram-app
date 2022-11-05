@@ -10,7 +10,8 @@ export default class EventTransition{
         this.radius = radius;
     }
     getShape(){
-        const {ctx, width, height, radius} = this;
+        const {ctx, width, height, radius, width2, height2} = this;
+        console.log(`width: ${width},height:${height} width2: ${width2} height2: ${height2}`)
 
         ctx.beginPath();
         ctx.moveTo(width, height + 25);
@@ -25,9 +26,19 @@ export default class EventTransition{
         ctx.fillStyle = 'rgb(0, 172, 230)';
         ctx.beginPath();
         ctx.arc(width, height, 6, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.closePath();
+        ctx.beginPath();
         ctx.arc(width2, height, 6, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.closePath();
+        ctx.beginPath();
         ctx.arc(width, height2, 6, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.closePath();
+        ctx.beginPath();
         ctx.arc(width2, height2, 6, 0, 2 * Math.PI);
         ctx.fill();
+        ctx.closePath();
     }
 }

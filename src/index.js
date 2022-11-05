@@ -1,13 +1,13 @@
-import {getButtons} from './components/ShowBlock.js';
+import {getButtons} from './components/showBlock.js';
 import {chooseShape} from './components/chooseShape.js'
 import {updateElement, updateElementWithAngle} from './components/updateElement.js'
-import { zoom } from './components/zoom.js';
-import { grid } from './components/grid.js';
-import { join, nearElement, movingArrows } from './components/joining.js';
+import { zoom } from './components/buttons/btnZoom.js';
+import { grid } from './components/buttons/btnGrid.js';
+import { join, nearElement} from './components/joining.js';
 import { getElementAtPosition} from './components/getElement.js';
+import  {updateEndOfInstance, updateProcess, updateText, updatePhysicallyFlow, updateInput, updateElse} from './components/movingAction.js';
 
 // later, to make this navbar to be dynamic, that means, to move it wherever i want either with showing block and to minimazi and maximazi as well    ✓
-
 // inserting every shapes to the main process
 // to create action with inserting text
 // to create deleting of instance of class with backspace and delete
@@ -151,7 +151,6 @@ window.addEventListener("load", (event)=>{
                 // console.log(shapes)
                 if(matched.length === 0){
                     shapes.push(selectedElement)
-                    // console.log('pushing another shape')
                 }
     
                 // updateElement(elements, ctx, id, width, height, w, h, type, shapes, 400, 300);
@@ -177,56 +176,17 @@ window.addEventListener("load", (event)=>{
         event.target.style.cursor = element ?  cursorForPosition(element.position) : "default";
         if(action === "moving"){
             if(selectedElement.type === "end-of-instance"){
-                const {id, width2, height2, width3, height3, type, offSetX, offSetY} = selectedElement;
-                const w = width3 - width2;   
-                const h = height3 - height2;
-                const nexX1 = pageX - offSetX;
-                const nexY1 = pageY - offSetY;
-                updateElement(elements, ctx, id, nexX1, nexY1, w, h, type);
+                updateEndOfInstance(pageX, pageY, ctx, selectedElement, elements);
             }else if(selectedElement.type === "process"){
-                const {id, width, height, width2, height2, type, offSetX, offSetY, shapes, increaseWidth, increaseHeight, connectArrows} = selectedElement;
-                const w = width2 - width;  
-                const h = height2 - height;
-                const nexX1 = pageX - offSetX;
-                const nexY1 = pageY - offSetY;
-                if(connectArrows){
-                    updateElement(elements, ctx, id, nexX1, nexY1, w, h, type, shapes, increaseWidth + 300, increaseHeight + 200, null, connectArrows);
-                    connectArrows.forEach(connectArrow => {
-                        console.log(connectArrow)
-                        movingArrows(connectArrow, nexX1, nexY1, w, h) // connectArrow gives a flood paramters, thats the reason why is not working a moving
-                    })
-                }else{
-                    updateElement(elements, ctx, id, nexX1, nexY1, w, h, type, shapes, increaseWidth + 300, increaseHeight + 200, connectArrows);
-                }
+                updateProcess(pageX, pageY, ctx, selectedElement, elements);
             }else if(selectedElement.type === "text"){
-                const {id, width, height, width2, height2, type, offSetX, offSetY, text} = selectedElement;
-                const w = width2 - width;   
-                const h = height2 - height;
-                const nexX1 = pageX - offSetX;
-                const nexY1 = pageY - offSetY;
-                updateElement(elements, ctx, id, nexX1, nexY1, w, h, type, null, null, null, text);
+                updateText(pageX, pageY, ctx, selectedElement, elements);
             }else if(selectedElement.type === "physically-flow"){
-                const {id, width, height, width2, height2, type, offSetX, offSetY, angle} = selectedElement;
-                const w = width2 - width;   
-                const h = height2 - height;
-                const nexX1 = pageX - offSetX;
-                const nexY1 = pageY - offSetY;
-                updateElementWithAngle(elements, ctx, id, nexX1, nexY1, w, h, type, angle);
-            }
-            else if(selectedElement.type === "input"){
-                const {id, width, height, width2, height2, type, offSetX, offSetY, angle} = selectedElement;
-                const w = width2 - width;   
-                const h = height2 - height;
-                const nexX1 = pageX - offSetX;
-                const nexY1 = pageY - offSetY;
-                updateElementWithAngle(elements, ctx,id, nexX1, nexY1, w, h, type, angle);
+                updatePhysicallyFlow(pageX, pageY, ctx, selectedElement, elements);
+            }else if(selectedElement.type === "input"){
+                updateInput(pageX, pageY, ctx, selectedElement, elements);
             }else {
-                const {id, width, height, width2, height2, type, offSetX, offSetY} = selectedElement;
-                const w = width2 - width;   
-                const h = height2 - height;
-                const nexX1 = pageX - offSetX;
-                const nexY1 = pageY - offSetY;
-                updateElement(elements, ctx,id, nexX1, nexY1, w, h, type);
+                updateElse(pageX, pageY, ctx, selectedElement, elements);
             }
             const result = elements.filter(element => element.id !== selectedElement.id && element.type === "process")
             const enlarge = getElementAtPosition(pageX, pageY, result);
