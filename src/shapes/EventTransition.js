@@ -11,7 +11,7 @@ export default class EventTransition{
     }
     getShape(){
         const {ctx, width, height, radius, width2, height2} = this;
-        console.log(`width: ${width},height:${height} width2: ${width2} height2: ${height2}`)
+        // console.log(`width: ${width},height:${height} width2: ${width2} height2: ${height2}`)
 
         ctx.beginPath();
         ctx.moveTo(width, height + 25);
